@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tu bono — Sanación Divina</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+
+<div class="contenedor">
+
+  <div class="encabezado" style="display:flex;align-items:center;gap:12px;text-align:left;padding-top:22px;padding-bottom:18px;">
+    <a href="index.html" style="color:var(--vino);text-decoration:none;display:flex;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </a>
+    <div>
+      <div class="marca" style="font-size:18px;">Tu bono de regalo</div>
+      <div class="subtitulo">Incluido con tu novena</div>
+    </div>
+  </div>
+
+  <div style="padding:20px 20px 0;text-align:center;">
+    <div style="font-size:11.5px;font-weight:700;color:var(--dorado);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Regalo por tu compra</div>
+    <div style="font-family:var(--font-titulo);font-size:21px;font-weight:700;color:var(--vino);line-height:1.3;margin-bottom:18px;">El Rincón de Oración de San Rafael</div>
+  </div>
+
+  <div class="visor-libro" id="visorLibro">
+    <div class="pagina-libro actual" id="paginaActual">
+      <img id="imagenActual" src="" alt="Página del libro">
+    </div>
+    <div class="pagina-libro detras" id="paginaSiguiente" style="display:none;">
+      <img id="imagenSiguiente" src="" alt="Página siguiente">
+    </div>
+  </div>
+
+  <div class="controles-visor" style="max-width:340px;margin:18px auto 0;">
+    <button class="boton-pagina" id="botonAnterior" onclick="paginaAnterior()" aria-label="Página anterior">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <span class="indicador-pagina" id="indicadorPagina">Página 1 de 21</span>
+    <button class="boton-pagina" id="botonSiguiente" onclick="paginaSiguiente()" aria-label="Página siguiente">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+  </div>
+
+  <div style="padding:24px 20px 0;">
+    <a href="https://pub-17b6dd695eac400e81cbb5a5047191fe.r2.dev/guia-conexion-oracion.pdf" target="_blank" class="boton-comprar" style="text-decoration:none;display:flex;width:100%;">
+      Descargar PDF completo
+    </a>
+    <div class="nota-garantia" style="margin-top:14px;">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--dorado)"><rect x="3" y="8" width="18" height="13" rx="1"/><path d="M3 8h18M12 8v13M7.5 8a2.5 2.5 0 1 1 0-5C9 3 12 5 12 8c0-3 3-5 4.5-5a2.5 2.5 0 1 1 0 5"/></svg>
+      21 páginas · tuyo para siempre
+    </div>
+  </div>
+
+  <div class="nav-inferior">
+    <button class="nav-item" onclick="window.location.href='index.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg>
+      <span>Novenas</span>
+    </button>
+    <button class="nav-item activo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="13" rx="1"/><path d="M3 8h18M12 8v13M7.5 8a2.5 2.5 0 1 1 0-5C9 3 12 5 12 8c0-3 3-5 4.5-5a2.5 2.5 0 1 1 0 5"/></svg>
+      <span>Bono</span>
+    </button>
+    <button class="nav-item" onclick="window.location.href='silencio.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+      <span>Silencio</span>
+    </button>
+    <button class="nav-item" onclick="window.location.href='diario.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      <span>Diario</span>
+    </button>
+  </div>
+
+</div>
+
+<script>
+const URL_BASE_LIBRO = 'https://pub-17b6dd695eac400e81cbb5a5047191fe.r2.dev';
+const TOTAL_PAGINAS = 21;
+const URL_SONIDO_PAGINA = `${URL_BASE_LIBRO}/pagina-sonido.mp3`;
+
+let paginaActual = 1;
+let animando = false;
+const sonidoPagina = new Audio(URL_SONIDO_PAGINA);
+
+function urlPagina(numero) {
+  return `${URL_BASE_LIBRO}/libro-pagina-${numero}.jpg`;
+}
+
+function precargarPagina(numero) {
+  if (numero < 1 || numero > TOTAL_PAGINAS) return;
+  const img = new Image();
+  img.src = urlPagina(numero);
+}
+
+function inicializarVisor() {
+  document.getElementById('imagenActual').src = urlPagina(paginaActual);
+  actualizarControles();
+  precargarPagina(paginaActual + 1);
+  precargarPagina(paginaActual - 1);
+}
+
+function actualizarControles() {
+  document.getElementById('indicadorPagina').textContent = `Página ${paginaActual} de ${TOTAL_PAGINAS}`;
+  document.getElementById('botonAnterior').disabled = paginaActual <= 1;
+  document.getElementById('botonSiguiente').disabled = paginaActual >= TOTAL_PAGINAS;
+}
+
+function reproducirSonidoPagina() {
+  try {
+    sonidoPagina.currentTime = 0;
+    sonidoPagina.play().catch(() => {});
+  } catch (e) {}
+}
+
+function cambiarPagina(numeroNuevo, direccion) {
+  if (animando || numeroNuevo < 1 || numeroNuevo > TOTAL_PAGINAS) return;
+  animando = true;
+  reproducirSonidoPagina();
+
+  const visor = document.getElementById('visorLibro');
+  const paginaActualEl = document.getElementById('paginaActual');
+  const paginaSiguienteEl = document.getElementById('paginaSiguiente');
+  const imagenSiguiente = document.getElementById('imagenSiguiente');
+
+  imagenSiguiente.src = urlPagina(numeroNuevo);
+  paginaSiguienteEl.style.display = 'block';
+  paginaSiguienteEl.classList.remove('detras');
+  paginaSiguienteEl.style.zIndex = '2';
+  paginaActualEl.style.zIndex = '5';
+
+  requestAnimationFrame(() => {
+    paginaActualEl.classList.add('girando-adelante');
+  });
+
+  setTimeout(() => {
+    paginaActual = numeroNuevo;
+    document.getElementById('imagenActual').src = urlPagina(paginaActual);
+    paginaActualEl.classList.remove('girando-adelante');
+    paginaSiguienteEl.style.display = 'none';
+    paginaActualEl.style.zIndex = '3';
+    actualizarControles();
+    precargarPagina(paginaActual + (direccion === 'siguiente' ? 1 : -1));
+    animando = false;
+  }, 620);
+}
+
+function paginaSiguiente() {
+  cambiarPagina(paginaActual + 1, 'siguiente');
+}
+
+function paginaAnterior() {
+  cambiarPagina(paginaActual - 1, 'anterior');
+}
+
+let inicioToqueX = 0;
+document.getElementById('visorLibro').addEventListener('touchstart', (e) => {
+  inicioToqueX = e.touches[0].clientX;
+});
+document.getElementById('visorLibro').addEventListener('touchend', (e) => {
+  const finToqueX = e.changedTouches[0].clientX;
+  const diferencia = finToqueX - inicioToqueX;
+  if (Math.abs(diferencia) > 40) {
+    if (diferencia < 0) paginaSiguiente();
+    else paginaAnterior();
+  }
+});
+
+inicializarVisor();
+</script>
+
+</body>
+</html>
