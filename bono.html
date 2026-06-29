@@ -116,21 +116,38 @@ function reproducirSonidoPagina() {
   } catch (e) {}
 }
 
-function cambiarPagina(numeroNuevo, direccion) {
+function cargarImagen(url) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => resolve(url);
+    img.onerror = () => resolve(url);
+    img.src = url;
+  });
+}
+
+async function cambiarPagina(numeroNuevo, direccion) {
   if (animando || numeroNuevo < 1 || numeroNuevo > TOTAL_PAGINAS) return;
   animando = true;
-  reproducirSonidoPagina();
 
-  const visor = document.getElementById('visorLibro');
   const paginaActualEl = document.getElementById('paginaActual');
   const paginaSiguienteEl = document.getElementById('paginaSiguiente');
   const imagenSiguiente = document.getElementById('imagenSiguiente');
 
-  imagenSiguiente.src = urlPagina(numeroNuevo);
+  const urlNueva = urlPagina(numeroNuevo);
+
+  // Esperamos a que la imagen esté completamente decodificada en memoria
+  // antes de mostrarla, para que nunca aparezca un parpadeo en blanco
+  // mientras el navegador todavía está descargando o pintando el archivo.
+  await cargarImagen(urlNueva);
+
+  reproducirSonidoPagina();
+
+  imagenSiguiente.src = urlNueva;
   paginaSiguienteEl.style.display = 'block';
   paginaSiguienteEl.classList.remove('detras');
   paginaSiguienteEl.style.zIndex = '2';
   paginaActualEl.style.zIndex = '5';
+  paginaActualEl.style.transition = 'transform 0.6s cubic-bezier(0.45, 0.05, 0.55, 0.95)';
 
   requestAnimationFrame(() => {
     paginaActualEl.classList.add('girando-adelante');
@@ -138,10 +155,16 @@ function cambiarPagina(numeroNuevo, direccion) {
 
   setTimeout(() => {
     paginaActual = numeroNuevo;
-    document.getElementById('imagenActual').src = urlPagina(paginaActual);
+
+    paginaActualEl.style.transition = 'none';
+    document.getElementById('imagenActual').src = urlNueva;
     paginaActualEl.classList.remove('girando-adelante');
-    paginaSiguienteEl.style.display = 'none';
     paginaActualEl.style.zIndex = '3';
+    paginaSiguienteEl.style.display = 'none';
+
+    void paginaActualEl.offsetHeight;
+    paginaActualEl.style.transition = '';
+
     actualizarControles();
     precargarPagina(paginaActual + (direccion === 'siguiente' ? 1 : -1));
     animando = false;
