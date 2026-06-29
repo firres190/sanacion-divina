@@ -12,7 +12,8 @@
 
 <div class="contenedor">
 
-  <div class="encabezado">
+  <div class="encabezado" style="position:relative;">
+    <div id="contenedorBotonPerfil" style="position:absolute;top:24px;right:20px;"></div>
     <div class="marca" style="font-size:19px;">Diario espiritual</div>
     <div class="subtitulo">Tu espacio personal de reflexión y gratitud</div>
     <div class="linea-decorativa"></div>
@@ -197,5 +198,10 @@ async function guardarEntrada() {
 cargarEntradas();
 </script>
 
+<script src="js/perfil.js"></script>
+<script>
+document.getElementById('contenedorBotonPerfil').innerHTML = htmlBotonPerfil();
+inyectarPerfilEnPagina();
+</script>
 </body>
 </html>
