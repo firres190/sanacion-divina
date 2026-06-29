@@ -321,6 +321,41 @@ body {
   padding: 2px 0 4px;
 }
 
+.bloque-instrucciones {
+  background: var(--dorado-claro);
+  border-radius: 14px;
+  padding: 16px 18px 14px;
+  margin-top: 16px;
+}
+
+.titulo-instrucciones {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #8A6B1F;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+
+.lista-instrucciones {
+  margin: 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.lista-instrucciones li {
+  font-size: 14px;
+  color: var(--texto);
+  line-height: 1.5;
+}
+
+.lista-instrucciones li::marker {
+  color: var(--dorado);
+  font-weight: 700;
+}
+
 /* ---------- Reproductor de audio ---------- */
 .reproductor {
   background: linear-gradient(180deg, #ffffff 0%, var(--vino-claro) 100%);
