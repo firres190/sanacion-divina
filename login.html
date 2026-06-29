@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Iniciar sesión — Sanación Divina</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+
+<div class="contenedor">
+  <div class="pantalla-login">
+
+    <div class="marca-login">
+      <div style="width:64px;height:64px;border-radius:50%;background:var(--vino-claro);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="color:var(--vino)"><path d="M16 8.5c2 0 4 1.2 4 3-1.5.5-2.8.3-4-.5M8 8.5C6 8.5 4 9.7 4 11.5c1.5.5 2.8.3 4-.5M12 4c0 5-1 9-5 13M12 4c0 5 1 9 5 13"/></svg>
+      </div>
+      <div class="nombre">Sanación Divina</div>
+      <div style="font-size:13px;color:var(--texto-suave);margin-top:4px;">Entra con los datos que recibiste por correo</div>
+    </div>
+
+    <div class="mensaje-error" id="mensajeError"></div>
+
+    <form id="formularioLogin" onsubmit="iniciarSesion(event)">
+      <div class="campo-formulario">
+        <label for="correo">Correo electrónico</label>
+        <input type="email" id="correo" placeholder="tu@correo.com" required autocomplete="email">
+      </div>
+
+      <div class="campo-formulario">
+        <label for="clave">Contraseña</label>
+        <input type="text" id="clave" placeholder="SANACION-XXXXXX" required autocomplete="off" style="text-transform:uppercase;">
+      </div>
+
+      <button type="submit" class="boton-primario" id="botonIngresar">Ingresar a mi novena</button>
+    </form>
+
+    <p style="text-align:center;font-size:13px;color:var(--texto-suave);margin-top:22px;">
+      ¿No tienes una cuenta?
+      <a href="https://pay.hotmart.com/TU-LINK-NOVENA-SAN-RAFAEL" style="color:var(--vino);font-weight:600;text-decoration:none;">Comenzar mi novena</a>
+    </p>
+
+    <p style="text-align:center;font-size:12.5px;color:var(--texto-suave);margin-top:10px;">
+      ¿No recibiste tu contraseña?
+      <a href="mailto:soporte@sanaciondivina.app" style="color:var(--texto-suave);text-decoration:underline;">Escríbenos</a>
+    </p>
+
+  </div>
+</div>
+
+<script>
+async function iniciarSesion(evento) {
+  evento.preventDefault();
+
+  const correo = document.getElementById('correo').value.trim();
+  const clave = document.getElementById('clave').value.trim();
+  const mensajeError = document.getElementById('mensajeError');
+  const boton = document.getElementById('botonIngresar');
+
+  mensajeError.classList.remove('visible');
+  boton.textContent = 'Ingresando...';
+  boton.disabled = true;
+
+  try {
+    const respuesta = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: correo, password: clave })
+    });
+
+    const datos = await respuesta.json();
+
+    if (!respuesta.ok) {
+      mensajeError.textContent = datos.error || 'Correo o contraseña incorrectos.';
+      mensajeError.classList.add('visible');
+      boton.textContent = 'Ingresar a mi novena';
+      boton.disabled = false;
+      return;
+    }
+
+    localStorage.setItem('sd_session', datos.sessionToken);
+    localStorage.setItem('sd_email', datos.email);
+    localStorage.setItem('sd_santo', datos.santoId);
+    localStorage.setItem('sd_dia_desbloqueado', datos.diaDesbloqueado);
+    localStorage.setItem('sd_dias_completados', JSON.stringify(datos.diasCompletados));
+
+    window.location.href = `novena.html?santo=${datos.santoId}`;
+
+  } catch (error) {
+    mensajeError.textContent = 'No pudimos conectar. Intenta de nuevo en unos segundos.';
+    mensajeError.classList.add('visible');
+    boton.textContent = 'Ingresar a mi novena';
+    boton.disabled = false;
+  }
+}
+</script>
+
+</body>
+</html>

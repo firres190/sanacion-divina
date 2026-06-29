@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Novena a San Rafael Arcángel — Sanación Divina</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+
+<div class="contenedor">
+
+  <div class="encabezado" style="display:flex;align-items:center;gap:12px;text-align:left;padding-top:22px;padding-bottom:18px;">
+    <a href="index.html" style="color:var(--vino);text-decoration:none;display:flex;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </a>
+    <div>
+      <div class="marca" style="font-size:18px;">San Rafael Arcángel</div>
+      <div class="subtitulo">Novena de sanación</div>
+    </div>
+  </div>
+
+  <div class="cabecera-novena">
+    <div class="titulo-novena">Tu camino de 9 días</div>
+    <div class="descripcion-novena" id="textoProgreso">Comienza hoy tu primer día de oración.</div>
+  </div>
+
+  <div class="rosario-dias" id="rosarioDias"></div>
+
+  <div id="contenidoDia"></div>
+
+  <div class="modal-proximamente" id="modalLectura" style="align-items:flex-start;background:var(--crema);">
+    <div style="width:100%;max-width:480px;min-height:100vh;background:var(--crema);">
+      <div style="display:flex;justify-content:flex-end;padding:18px 20px 0;">
+        <button onclick="cerrarLectura()" style="background:none;border:none;color:var(--texto-suave);cursor:pointer;display:flex;padding:6px;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="pantalla-lectura">
+        <div class="numero-dia-lectura" id="lecturaNumeroDia"></div>
+        <div class="titulo-lectura" id="lecturaTitulo"></div>
+        <div class="cuerpo-lectura" id="lecturaCuerpo"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-inferior">
+    <button class="nav-item activo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg>
+      <span>Novenas</span>
+    </button>
+    <button class="nav-item" onclick="window.location.href='estampitas.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+      <span>Estampitas</span>
+    </button>
+    <button class="nav-item" onclick="window.location.href='silencio.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+      <span>Silencio</span>
+    </button>
+    <button class="nav-item" onclick="window.location.href='diario.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      <span>Diario</span>
+    </button>
+  </div>
+
+</div>
+
+<script>
+const ICONO_CANDADO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>';
+const ICONO_CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
+const ICONO_PLAY = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+const ICONO_PAUSE = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>';
+const ICONO_NOTA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>';
+const ICONO_PALOMA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8.5c2 0 4 1.2 4 3-1.5.5-2.8.3-4-.5M8 8.5C6 8.5 4 9.7 4 11.5c1.5.5 2.8.3 4-.5M12 4c0 5-1 9-5 13M12 4c0 5 1 9 5 13"/></svg>';
+const ICONO_ESCUDO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/></svg>';
+const ICONO_LIBRO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>';
+const ICONO_GUARDAR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>';
+const ICONO_GUARDAR_LLENO = '<svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>';
+const ICONO_COMPARTIR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>';
+const ICONO_X = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>';
+
+const ESTADO_DEMO = {
+  esComprador: false,
+  diaDesbloqueado: 1,
+  diasCompletados: [],
+  diasGuardados: [],
+  totalDias: 9,
+  diasConContenido: 3
+};
+
+// Si hay una sesión real guardada (login.html la dejó en localStorage),
+// usamos esos datos reales en vez del estado de demostración.
+function cargarSesionReal() {
+  const token = localStorage.getItem('sd_session');
+  if (!token) return false;
+
+  ESTADO_DEMO.esComprador = true;
+  ESTADO_DEMO.diaDesbloqueado = parseInt(localStorage.getItem('sd_dia_desbloqueado') || '1', 10);
+  try {
+    ESTADO_DEMO.diasCompletados = JSON.parse(localStorage.getItem('sd_dias_completados') || '[]');
+  } catch (e) {
+    ESTADO_DEMO.diasCompletados = [];
+  }
+  return true;
+}
+
+const TITULOS_DIAS = {
+  1: "Apertura: Confianza en el Médico de Dios",
+  2: "Sanación del cuerpo",
+  3: "Sanación del alma y las heridas del corazón",
+  4: "Sanación de la familia",
+  5: "Liberación de las cargas y el pasado",
+  6: "Fortaleza en momentos de enfermedad o prueba",
+  7: "Sanación de la economía y el trabajo",
+  8: "Protección y guía en las decisiones",
+  9: "Cierre: Gratitud y entrega total"
+};
+
+const DURACIONES_DIAS = { 1: "3:48", 2: "2:54", 3: "3:02" };
+
+let diaSeleccionado = 1;
+let audioReproduciendo = false;
+let progresoSimulado = 0;
+let intervaloAudio = null;
+
+function renderizarRosario() {
+  const contenedor = document.getElementById('rosarioDias');
+  contenedor.innerHTML = '';
+
+  for (let i = 1; i <= ESTADO_DEMO.totalDias; i++) {
+    const cuenta = document.createElement('div');
+    let clase = 'cuenta-dia';
+    let contenido = i;
+
+    if (ESTADO_DEMO.diasCompletados.includes(i)) {
+      clase += ' completado';
+      contenido = ICONO_CHECK;
+    } else if (i <= ESTADO_DEMO.diaDesbloqueado) {
+      clase += ' disponible';
+    } else {
+      clase += ' bloqueado';
+    }
+
+    cuenta.className = clase;
+    cuenta.innerHTML = contenido;
+    cuenta.onclick = () => seleccionarDia(i);
+    contenedor.appendChild(cuenta);
+  }
+
+  const texto = document.getElementById('textoProgreso');
+  if (ESTADO_DEMO.diaDesbloqueado >= ESTADO_DEMO.totalDias) {
+    texto.textContent = 'Has completado el camino de los 9 días.';
+  } else {
+    texto.textContent = `Estás en el día ${ESTADO_DEMO.diaDesbloqueado} de ${ESTADO_DEMO.totalDias}.`;
+  }
+}
+
+function generarOnda() {
+  let barras = '';
+  for (let i = 0; i < 28; i++) {
+    const alto = 6 + Math.round(Math.sin(i * 0.7) * 5 + 6);
+    barras += `<span style="height:${alto}px" data-idx="${i}"></span>`;
+  }
+  return barras;
+}
+
+function seleccionarDia(dia) {
+  detenerAudio();
+  diaSeleccionado = dia;
+  renderizarContenidoDia(dia);
+}
+
+function renderizarContenidoDia(dia) {
+  const contenedor = document.getElementById('contenidoDia');
+  const titulo = TITULOS_DIAS[dia];
+  const disponible = dia <= ESTADO_DEMO.diaDesbloqueado;
+  const tieneContenido = dia <= ESTADO_DEMO.diasConContenido;
+
+  if (!disponible) {
+    contenedor.innerHTML = `
+      <div class="tarjeta-dia">
+        <div class="aviso-bloqueo">
+          <div class="icono-candado">${ICONO_CANDADO}</div>
+          <div class="mensaje-bloqueo">Este día se desbloquea el día ${dia} de tu novena.<br>Vuelve entonces para continuar tu camino.</div>
+        </div>
+      </div>`;
+    return;
+  }
+
+  if (!tieneContenido) {
+    contenedor.innerHTML = `
+      <div class="tarjeta-dia">
+        <div class="aviso-bloqueo">
+          <div class="icono-candado">${ICONO_PALOMA}</div>
+          <div class="mensaje-bloqueo">El contenido de este día está en preparación.<br>Muy pronto disponible. Te avisaremos en cuanto esté listo.</div>
+        </div>
+      </div>`;
+    return;
+  }
+
+  const duracion = DURACIONES_DIAS[dia] || "3:00";
+
+  if (!ESTADO_DEMO.esComprador) {
+    if (dia === 1) {
+      contenedor.innerHTML = `
+        <div class="tarjeta-dia">
+          <div class="numero-dia">Día ${dia} de ${ESTADO_DEMO.totalDias}</div>
+          <div class="titulo-dia">${titulo}</div>
+
+          <div class="reproductor bloqueado">
+            <div class="fila-reproductor">
+              <button class="boton-play" onclick="irAComprar()">${ICONO_CANDADO}</button>
+              <div class="info-reproductor">
+                <div class="titulo-audio">${ICONO_NOTA} Audio narrado · ${duracion}</div>
+                <div class="estado-audio">Disponible al desbloquear la novena</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="texto-dia">${TEXTO_DIA_1_PREVIEW}</div>
+
+          <div class="aviso-bloqueo" style="border-top:1px solid var(--borde);margin-top:6px;">
+            <div class="precio-destacado">$7 USD</div>
+            <div class="mensaje-bloqueo">Continúa tu novena completa de 9 días,<br>con audio narrado para cada día.</div>
+            <button class="boton-comprar" onclick="irAComprar()">Comenzar mi novena completa</button>
+            <div class="nota-garantia">${ICONO_ESCUDO} Pago único · acceso de por vida</div>
+          </div>
+        </div>`;
+    } else {
+      contenedor.innerHTML = `
+        <div class="tarjeta-dia">
+          <div class="numero-dia">Día ${dia} de ${ESTADO_DEMO.totalDias}</div>
+          <div class="titulo-dia">${titulo}</div>
+          <div class="aviso-bloqueo">
+            <div class="icono-candado">${ICONO_CANDADO}</div>
+            <div class="precio-destacado">$7 USD</div>
+            <div class="mensaje-bloqueo">Desbloquea esta novena completa de 9 días<br>con audio narrado para acompañarte cada día.</div>
+            <button class="boton-comprar" onclick="irAComprar()">Comenzar mi novena completa</button>
+            <div class="nota-garantia">${ICONO_ESCUDO} Pago único · acceso de por vida</div>
+          </div>
+        </div>`;
+    }
+    return;
+  }
+
+  contenedor.innerHTML = `
+    <div class="tarjeta-dia">
+      <div class="numero-dia">Día ${dia} de ${ESTADO_DEMO.totalDias}</div>
+      <div class="titulo-dia">${titulo}</div>
+
+      <div class="reproductor">
+        <div class="fila-reproductor">
+          <button class="boton-play" id="botonPlay" onclick="alternarAudio(${dia})">${ICONO_PLAY}</button>
+          <div class="info-reproductor">
+            <div class="titulo-audio">${ICONO_NOTA} Audio narrado</div>
+            <div class="estado-audio" id="estadoAudio">Toca para escuchar · ${duracion}</div>
+          </div>
+        </div>
+        <div class="onda-audio" id="ondaAudio">${generarOnda()}</div>
+        <div class="barra-progreso-audio" id="barraProgreso" onclick="buscarEnAudio(event)">
+          <div class="relleno-progreso" id="rellenoProgreso"></div>
+          <div class="perilla-progreso" id="perillaProgreso"></div>
+        </div>
+        <div class="fila-tiempos">
+          <span id="tiempoActual">0:00</span>
+          <span id="tiempoTotal">${duracion}</span>
+        </div>
+      </div>
+
+      <div class="texto-dia">${TEXTOS_DIAS[dia] || ''}</div>
+
+      <div class="fila-acciones">
+        <button class="boton-accion" onclick="abrirLectura(${dia})">
+          ${ICONO_LIBRO}
+          <span>Leer</span>
+        </button>
+        <button class="boton-accion" id="botonGuardar" onclick="alternarGuardado(${dia})">
+          <span id="iconoGuardar">${ESTADO_DEMO.diasGuardados && ESTADO_DEMO.diasGuardados.includes(dia) ? ICONO_GUARDAR_LLENO : ICONO_GUARDAR}</span>
+          <span>Guardar</span>
+        </button>
+        <button class="boton-accion" onclick="compartirDia(${dia})">
+          ${ICONO_COMPARTIR}
+          <span>Compartir</span>
+        </button>
+      </div>
+
+      <button class="boton-primario" style="margin-top:4px;display:flex;align-items:center;justify-content:center;gap:8px;" onclick="marcarCompletado(${dia})">
+        <span style="width:16px;height:16px;display:inline-flex;">${ICONO_CHECK}</span> Marcar día como completado
+      </button>
+    </div>`;
+
+  const botonGuardar = document.getElementById('botonGuardar');
+  if (botonGuardar && ESTADO_DEMO.diasGuardados && ESTADO_DEMO.diasGuardados.includes(dia)) {
+    botonGuardar.classList.add('activo');
+  }
+
+  pintarOnda(0);
+}
+
+function abrirLectura(dia) {
+  document.getElementById('lecturaNumeroDia').textContent = `Día ${dia} de ${ESTADO_DEMO.totalDias}`;
+  document.getElementById('lecturaTitulo').textContent = TITULOS_DIAS[dia];
+  document.getElementById('lecturaCuerpo').innerHTML = TEXTOS_DIAS[dia] || TEXTO_DIA_1_PREVIEW;
+  document.getElementById('modalLectura').classList.add('visible');
+  document.body.style.overflow = 'hidden';
+}
+
+function cerrarLectura() {
+  document.getElementById('modalLectura').classList.remove('visible');
+  document.body.style.overflow = '';
+}
+
+function alternarGuardado(dia) {
+  if (!ESTADO_DEMO.diasGuardados) ESTADO_DEMO.diasGuardados = [];
+  const idx = ESTADO_DEMO.diasGuardados.indexOf(dia);
+  const icono = document.getElementById('iconoGuardar');
+  const boton = document.getElementById('botonGuardar');
+
+  if (idx >= 0) {
+    ESTADO_DEMO.diasGuardados.splice(idx, 1);
+    icono.innerHTML = ICONO_GUARDAR;
+    boton.classList.remove('activo');
+  } else {
+    ESTADO_DEMO.diasGuardados.push(dia);
+    icono.innerHTML = ICONO_GUARDAR_LLENO;
+    boton.classList.add('activo');
+  }
+}
+
+function compartirDia(dia) {
+  const titulo = TITULOS_DIAS[dia];
+  const textoPlano = (TEXTOS_DIAS[dia] || TEXTO_DIA_1_PREVIEW)
+    .replace(/<[^>]+>/g, '\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+  const mensaje = `Novena a San Rafael Arcángel — Día ${dia}\n${titulo}\n\n${textoPlano}\n\nSanación Divina`;
+
+  if (navigator.share) {
+    navigator.share({ text: mensaje }).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(mensaje).then(() => {
+      alert('Oración copiada. Ya puedes compartirla por WhatsApp o donde prefieras.');
+    });
+  }
+}
+
+function irAComprar() {
+  window.location.href = 'https://pay.hotmart.com/TU-LINK-NOVENA-SAN-RAFAEL';
+}
+
+function marcarCompletado(dia) {
+  detenerAudio();
+  if (!ESTADO_DEMO.diasCompletados.includes(dia)) {
+    ESTADO_DEMO.diasCompletados.push(dia);
+  }
+  renderizarRosario();
+  renderizarContenidoDia(dia);
+
+  const token = localStorage.getItem('sd_session');
+  if (token) {
+    localStorage.setItem('sd_dias_completados', JSON.stringify(ESTADO_DEMO.diasCompletados));
+    fetch('/api/marcar-completado', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sessionToken: token, dia })
+    }).catch(() => {});
+  }
+}
+
+function parsearDuracion(str) {
+  const [m, s] = str.split(':').map(Number);
+  return m * 60 + s;
+}
+
+function formatearTiempo(seg) {
+  const m = Math.floor(seg / 60);
+  const s = Math.floor(seg % 60);
+  return `${m}:${s.toString().padStart(2, '0')}`;
+}
+
+function pintarOnda(fraccion) {
+  const onda = document.getElementById('ondaAudio');
+  if (!onda) return;
+  const barras = onda.querySelectorAll('span');
+  const activas = Math.floor(barras.length * fraccion);
+  barras.forEach((b, i) => {
+    b.style.opacity = i < activas ? '1' : '0.3';
+  });
+}
+
+function alternarAudio(dia) {
+  const boton = document.getElementById('botonPlay');
+  if (audioReproduciendo) {
+    detenerAudio();
+    return;
+  }
+  audioReproduciendo = true;
+  boton.innerHTML = ICONO_PAUSE;
+  document.getElementById('estadoAudio').textContent = 'Reproduciendo';
+
+  const duracionTotal = parsearDuracion(DURACIONES_DIAS[dia] || "3:00");
+
+  intervaloAudio = setInterval(() => {
+    progresoSimulado += 0.5;
+    const fraccion = Math.min(progresoSimulado / duracionTotal, 1);
+    document.getElementById('rellenoProgreso').style.width = (fraccion * 100) + '%';
+    document.getElementById('perillaProgreso').style.left = (fraccion * 100) + '%';
+    document.getElementById('tiempoActual').textContent = formatearTiempo(progresoSimulado);
+    pintarOnda(fraccion);
+
+    if (fraccion >= 1) {
+      detenerAudio();
+    }
+  }, 500);
+}
+
+function detenerAudio() {
+  audioReproduciendo = false;
+  progresoSimulado = 0;
+  clearInterval(intervaloAudio);
+  const boton = document.getElementById('botonPlay');
+  if (boton) boton.innerHTML = ICONO_PLAY;
+  const estado = document.getElementById('estadoAudio');
+  if (estado) estado.textContent = 'Toca para escuchar · ' + (DURACIONES_DIAS[diaSeleccionado] || "3:00");
+  const relleno = document.getElementById('rellenoProgreso');
+  if (relleno) relleno.style.width = '0%';
+  const perilla = document.getElementById('perillaProgreso');
+  if (perilla) perilla.style.left = '0%';
+  const tiempo = document.getElementById('tiempoActual');
+  if (tiempo) tiempo.textContent = '0:00';
+  pintarOnda(0);
+}
+
+function buscarEnAudio(evento) {
+  const barra = document.getElementById('barraProgreso');
+  const rect = barra.getBoundingClientRect();
+  const fraccion = Math.min(Math.max((evento.clientX - rect.left) / rect.width, 0), 1);
+  const duracionTotal = parsearDuracion(DURACIONES_DIAS[diaSeleccionado] || "3:00");
+  progresoSimulado = fraccion * duracionTotal;
+  document.getElementById('rellenoProgreso').style.width = (fraccion * 100) + '%';
+  document.getElementById('perillaProgreso').style.left = (fraccion * 100) + '%';
+  document.getElementById('tiempoActual').textContent = formatearTiempo(progresoSimulado);
+  pintarOnda(fraccion);
+}
+
+const TEXTO_DIA_1_PREVIEW = `<p>Hermanos y hermanas, hoy comenzamos juntos esta novena a San Rafael Arcángel, a quien la tradición de la Iglesia conoce como el Médico de Dios, aquel que devolvió la vista a Tobit y acompañó a su hijo Tobías en un viaje donde nadie más podía protegerlo.</p><p>Antes de comenzar, busca un lugar tranquilo. Cierra los ojos, junta tus manos, y respira profundamente...</p><p style="color:var(--texto-suave);font-style:italic;">— Continúa en la novena completa —</p>`;
+
+const TEXTOS_DIAS = {};
+
+cargarSesionReal();
+renderizarRosario();
+renderizarContenidoDia(1);
+</script>
+
+</body>
+</html>

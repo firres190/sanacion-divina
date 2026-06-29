@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sanación Divina — Novenas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+
+<div class="contenedor">
+
+  <div class="encabezado">
+    <div class="marca">Sanación Divina</div>
+    <div class="subtitulo">Novenas de sanación e intercesión</div>
+    <div class="linea-decorativa"></div>
+  </div>
+
+  <div class="grid-santos">
+
+    <div class="tarjeta-santo activo" onclick="window.location.href='novena.html?santo=san-rafael'">
+      <div class="icono-santo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8.5c2 0 4 1.2 4 3-1.5.5-2.8.3-4-.5M8 8.5C6 8.5 4 9.7 4 11.5c1.5.5 2.8.3 4-.5M12 4c0 5-1 9-5 13M12 4c0 5 1 9 5 13"/></svg></div>
+      <div class="nombre-santo">San Rafael Arcángel</div>
+      <div class="etiqueta-estado">Novena de 9 días</div>
+    </div>
+
+    <div class="tarjeta-santo proximamente" onclick="mostrarProximamente('San Miguel Arcángel')">
+      <div class="icono-santo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/></svg></div>
+      <div class="nombre-santo">San Miguel Arcángel</div>
+      <div class="etiqueta-estado"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Próximamente</div>
+    </div>
+
+    <div class="tarjeta-santo proximamente" onclick="mostrarProximamente('Santa Rita de Casia')">
+      <div class="icono-santo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-4.35-9.5-9C.5 7.5 3 4 6.5 4 9 4 11 6 12 8c1-2 3-4 5.5-4C21 4 23.5 7.5 21.5 12 19 16.65 12 21 12 21z"/></svg></div>
+      <div class="nombre-santo">Santa Rita de Casia</div>
+      <div class="etiqueta-estado"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Próximamente</div>
+    </div>
+
+    <div class="tarjeta-santo proximamente" onclick="mostrarProximamente('Virgen María')">
+      <div class="icono-santo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="3"/><path d="M5 21c0-5 3-8 7-8s7 3 7 8"/></svg></div>
+      <div class="nombre-santo">Virgen María</div>
+      <div class="etiqueta-estado"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Próximamente</div>
+    </div>
+
+    <div class="tarjeta-santo proximamente" onclick="mostrarProximamente('Jesús')" style="grid-column: span 2;">
+      <div class="icono-santo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M7 7h10"/></svg></div>
+      <div class="nombre-santo">Jesús</div>
+      <div class="etiqueta-estado"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Próximamente</div>
+    </div>
+
+  </div>
+
+  <div class="modal-proximamente" id="modalProximamente">
+    <div class="contenido-modal">
+      <h3 id="nombreSantoModal">Próximamente</h3>
+      <p>Esta novena está en preparación. Déjanos tu correo y te avisamos en cuanto esté lista.</p>
+      <input type="email" id="correoNotificacion" placeholder="tu@correo.com" style="width:100%;padding:12px 14px;border:1px solid var(--borde);border-radius:8px;margin-bottom:12px;font-size:14px;">
+      <button class="boton-comprar" style="width:100%;" onclick="enviarNotificacion()">Avisarme cuando esté lista</button>
+      <p style="margin-top:14px;"><a href="#" onclick="cerrarModal()" style="color:var(--texto-suave);font-size:13px;">Cerrar</a></p>
+    </div>
+  </div>
+
+  <div class="nav-inferior">
+    <button class="nav-item activo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg>
+      <span>Novenas</span>
+    </button>
+    <button class="nav-item" onclick="window.location.href='estampitas.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+      <span>Estampitas</span>
+    </button>
+    <button class="nav-item" onclick="window.location.href='silencio.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+      <span>Silencio</span>
+    </button>
+    <button class="nav-item" onclick="window.location.href='diario.html'">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      <span>Diario</span>
+    </button>
+  </div>
+
+</div>
+
+<script>
+let santoSeleccionado = '';
+
+function mostrarProximamente(nombreSanto) {
+  santoSeleccionado = nombreSanto;
+  document.getElementById('nombreSantoModal').textContent = nombreSanto;
+  document.getElementById('modalProximamente').classList.add('visible');
+}
+
+function cerrarModal() {
+  document.getElementById('modalProximamente').classList.remove('visible');
+}
+
+async function enviarNotificacion() {
+  const correo = document.getElementById('correoNotificacion').value;
+  if (!correo || !correo.includes('@')) {
+    alert('Ingresa un correo válido');
+    return;
+  }
+  try {
+    await fetch('/api/notificar-proximamente', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: correo, santo: santoSeleccionado })
+    });
+    alert('¡Listo! Te avisaremos cuando esté disponible.');
+    cerrarModal();
+  } catch (e) {
+    alert('Hubo un problema. Intenta de nuevo.');
+  }
+}
+</script>
+
+</body>
+</html>
