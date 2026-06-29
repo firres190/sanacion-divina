@@ -12,7 +12,8 @@
 
 <div class="contenedor">
 
-  <div class="encabezado">
+  <div class="encabezado" style="position:relative;">
+    <div id="contenedorBotonPerfil" style="position:absolute;top:24px;right:20px;"></div>
     <div class="marca">Sanación Divina</div>
     <div class="subtitulo">Novenas de sanación e intercesión</div>
     <div class="linea-decorativa"></div>
@@ -114,6 +115,11 @@ async function enviarNotificacion() {
     alert('Hubo un problema. Intenta de nuevo.');
   }
 }
+</script>
+<script src="js/perfil.js"></script>
+<script>
+document.getElementById('contenedorBotonPerfil').innerHTML = htmlBotonPerfil();
+inyectarPerfilEnPagina();
 </script>
 
 </body>
