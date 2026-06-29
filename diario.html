@@ -18,15 +18,7 @@
     <div class="linea-decorativa"></div>
   </div>
 
-  <div class="tarjeta-dia" style="margin-top:28px;">
-    <div class="aviso-bloqueo" style="padding-top:8px;">
-      <div class="icono-candado">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-      </div>
-      <div style="font-family:var(--font-titulo);font-size:19px;color:var(--vino);font-weight:600;margin-bottom:8px;">Próximamente</div>
-      <div class="mensaje-bloqueo">Estamos preparando tu diario espiritual, un espacio personal para anotar tus reflexiones de cada día de oración.</div>
-    </div>
-  </div>
+  <div id="vistaPrincipal"></div>
 
   <div class="nav-inferior">
     <button class="nav-item" onclick="window.location.href='index.html'">
@@ -41,13 +33,169 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
       <span>Silencio</span>
     </button>
-    <button class="nav-item activo" onclick="window.location.href='diario.html'">
+    <button class="nav-item activo">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
       <span>Diario</span>
     </button>
   </div>
 
 </div>
+
+<script>
+const PREGUNTAS_GUIA = [
+  "¿Qué sentiste hoy durante tu momento de oración?",
+  "¿Por qué quieres dar gracias hoy?",
+  "¿Qué carga sientes que hoy pudiste soltar un poco?",
+  "¿A quién quieres encomendar hoy en tu oración?",
+  "¿Qué le pedirías a San Rafael Arcángel en este momento?",
+  "¿Qué cambió en ti desde que comenzaste este camino?",
+  "¿Qué necesitas perdonar o perdonarte hoy?"
+];
+
+const ICONO_LIBRO = '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>';
+
+let entradas = [];
+let cargando = true;
+let guardando = false;
+
+function obtenerPreguntaDelDia() {
+  const dia = new Date().getDate();
+  return PREGUNTAS_GUIA[dia % PREGUNTAS_GUIA.length];
+}
+
+function formatearFecha(fechaIso) {
+  const fecha = new Date(fechaIso);
+  const opciones = { day: 'numeric', month: 'long', year: 'numeric' };
+  return fecha.toLocaleDateString('es-ES', opciones);
+}
+
+function tieneSesion() {
+  return !!localStorage.getItem('sd_session');
+}
+
+async function cargarEntradas() {
+  const token = localStorage.getItem('sd_session');
+  if (!token) {
+    cargando = false;
+    renderizar();
+    return;
+  }
+
+  try {
+    const respuesta = await fetch('/api/listar-entradas-diario', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sessionToken: token })
+    });
+    const datos = await respuesta.json();
+    entradas = datos.entradas || [];
+  } catch (e) {
+    entradas = [];
+  }
+
+  cargando = false;
+  renderizar();
+}
+
+function renderizar() {
+  const contenedor = document.getElementById('vistaPrincipal');
+
+  if (!tieneSesion()) {
+    contenedor.innerHTML = `
+      <div class="tarjeta-dia" style="text-align:center;padding:36px 22px;">
+        <div style="font-size:14.5px;color:var(--texto-suave);line-height:1.6;margin-bottom:18px;">
+          Inicia sesión en tu novena para escribir y guardar tus reflexiones en tu diario espiritual.
+        </div>
+        <a href="login.html" class="boton-comprar" style="text-decoration:none;display:inline-flex;">Iniciar sesión</a>
+      </div>`;
+    return;
+  }
+
+  if (cargando) {
+    contenedor.innerHTML = `
+      <div class="tarjeta-dia" style="text-align:center;padding:36px 22px;">
+        <div style="font-size:14.5px;color:var(--texto-suave);">Cargando tu diario...</div>
+      </div>`;
+    return;
+  }
+
+  contenedor.innerHTML = `
+    <div class="tarjeta-dia">
+      <div class="numero-dia">Pregunta para hoy</div>
+      <div class="titulo-dia" style="font-size:18px;">${obtenerPreguntaDelDia()}</div>
+      <textarea id="textoEntrada" placeholder="Escribe aquí lo que sientes..." style="width:100%;min-height:120px;border:1px solid var(--borde);border-radius:12px;padding:14px;font-size:15px;font-family:inherit;color:var(--texto);resize:vertical;background:var(--crema);"></textarea>
+      <button class="boton-primario" style="margin-top:12px;" id="botonGuardarEntrada" onclick="guardarEntrada()">Guardar en mi diario</button>
+    </div>
+
+    <div style="padding:4px 20px 20px;">
+      <div style="font-size:11.5px;font-weight:700;color:var(--dorado);text-transform:uppercase;letter-spacing:1px;margin:8px 0 12px;">Tus reflexiones</div>
+      ${entradas.length === 0 ? renderizarVacio() : entradas.map(renderizarEntrada).join('')}
+    </div>`;
+}
+
+function renderizarVacio() {
+  return `
+    <div class="tarjeta-dia" style="text-align:center;padding:28px 20px;">
+      <div style="margin-bottom:10px;color:var(--candado);">${ICONO_LIBRO}</div>
+      <div style="font-size:14px;color:var(--texto-suave);">Aún no has escrito ninguna reflexión. Comienza con la pregunta de hoy.</div>
+    </div>`;
+}
+
+function renderizarEntrada(entrada) {
+  return `
+    <div class="tarjeta-dia" style="margin-bottom:14px;padding:18px 20px;">
+      <div style="font-size:12px;color:var(--dorado);font-weight:600;margin-bottom:8px;">${formatearFecha(entrada.fecha_creacion)}</div>
+      <div style="font-size:14.5px;color:var(--texto);line-height:1.6;white-space:pre-wrap;">${escaparHtml(entrada.contenido)}</div>
+    </div>`;
+}
+
+function escaparHtml(texto) {
+  const div = document.createElement('div');
+  div.textContent = texto;
+  return div.innerHTML;
+}
+
+async function guardarEntrada() {
+  const textarea = document.getElementById('textoEntrada');
+  const contenido = textarea.value.trim();
+
+  if (!contenido) return;
+  if (guardando) return;
+
+  guardando = true;
+  const boton = document.getElementById('botonGuardarEntrada');
+  boton.textContent = 'Guardando...';
+  boton.disabled = true;
+
+  const token = localStorage.getItem('sd_session');
+
+  try {
+    const respuesta = await fetch('/api/guardar-entrada-diario', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sessionToken: token, contenido })
+    });
+
+    if (respuesta.ok) {
+      const datos = await respuesta.json();
+      entradas.unshift({ id: datos.id, contenido, fecha_creacion: datos.fechaCreacion });
+      renderizar();
+    } else {
+      boton.textContent = 'Guardar en mi diario';
+      boton.disabled = false;
+      alert('No pudimos guardar tu entrada. Intenta de nuevo.');
+    }
+  } catch (e) {
+    boton.textContent = 'Guardar en mi diario';
+    boton.disabled = false;
+    alert('No pudimos conectar. Intenta de nuevo.');
+  }
+
+  guardando = false;
+}
+
+cargarEntradas();
+</script>
 
 </body>
 </html>
