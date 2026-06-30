@@ -26,6 +26,16 @@
     <div id="listaFrecuencias"></div>
   </div>
 
+  <div class="modal-proximamente" id="modalBloqueoSilencio">
+    <div class="contenido-modal">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--dorado);margin:0 auto 12px;display:block;"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      <h3>Escucha sin límites</h3>
+      <p>Desbloquea las 10 frecuencias de sanación al comenzar tu novena a San Rafael Arcángel.</p>
+      <button class="boton-comprar" style="width:100%;" onclick="window.location.href='novena.html'">Comenzar mi novena</button>
+      <p style="margin-top:14px;"><a href="#" onclick="cerrarAvisoBloqueoSilencio();return false;" style="color:var(--texto-suave);font-size:13px;">Cerrar</a></p>
+    </div>
+  </div>
+
   <div class="nav-inferior">
     <button class="nav-item" onclick="window.location.href='index.html'">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg>
@@ -154,10 +164,11 @@ function renderizarReproductor() {
 
 function renderizarLista() {
   const contenedor = document.getElementById('listaFrecuencias');
+  const bloqueado = !esComprador();
   contenedor.innerHTML = FRECUENCIAS.map((f, i) => `
     <div class="boton-accion" style="width:100%;flex-direction:row;justify-content:flex-start;gap:14px;padding:14px 16px;margin-bottom:10px;${indiceActual === i ? 'border-color:var(--vino);background:var(--vino-claro);' : ''}" onclick="seleccionarFrecuencia(${i})">
       <span style="width:38px;height:38px;border-radius:50%;background:${indiceActual === i ? 'var(--vino)' : 'var(--dorado-claro)'};color:${indiceActual === i ? '#fff' : 'var(--dorado)'};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-        ${indiceActual === i && reproduciendo ? ICONO_PAUSE.replace('viewBox="0 0 24 24"','viewBox="0 0 24 24" style="width:16px;height:16px"') : ICONO_PLAY.replace('viewBox="0 0 24 24"','viewBox="0 0 24 24" style="width:16px;height:16px"')}
+        ${bloqueado ? '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>' : (indiceActual === i && reproduciendo ? ICONO_PAUSE.replace('viewBox="0 0 24 24"','viewBox="0 0 24 24" style="width:16px;height:16px"') : ICONO_PLAY.replace('viewBox="0 0 24 24"','viewBox="0 0 24 24" style="width:16px;height:16px"'))}
       </span>
       <span style="text-align:left;">
         <span style="display:block;font-weight:600;font-size:14.5px;color:var(--texto);">${f.titulo}</span>
@@ -167,7 +178,15 @@ function renderizarLista() {
   `).join('');
 }
 
+function esComprador() {
+  return !!localStorage.getItem('sd_session');
+}
+
 function seleccionarFrecuencia(indice) {
+  if (!esComprador()) {
+    mostrarAvisoBloqueoSilencio();
+    return;
+  }
   indiceActual = indice;
   audio.pause();
   audio.src = urlFrecuencia(FRECUENCIAS[indice].archivo);
@@ -180,6 +199,11 @@ function seleccionarFrecuencia(indice) {
 function alternarReproduccion() {
   if (indiceActual === null) return;
 
+  if (!esComprador()) {
+    mostrarAvisoBloqueoSilencio();
+    return;
+  }
+
   if (reproduciendo) {
     audio.pause();
     reproduciendo = false;
@@ -191,6 +215,14 @@ function alternarReproduccion() {
   }
   renderizarReproductor();
   renderizarLista();
+}
+
+function mostrarAvisoBloqueoSilencio() {
+  document.getElementById('modalBloqueoSilencio').classList.add('visible');
+}
+
+function cerrarAvisoBloqueoSilencio() {
+  document.getElementById('modalBloqueoSilencio').classList.remove('visible');
 }
 
 audio.addEventListener('timeupdate', () => {
