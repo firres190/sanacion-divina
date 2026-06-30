@@ -7,6 +7,24 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/estilos.css">
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '986117244333073');
+fbq('track', 'PageView');
+fbq('track', 'ViewContent', {content_name: 'Novena San Rafael', value: 4.99, currency: 'USD'});
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=986117244333073&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
 </head>
 <body>
 
@@ -415,6 +433,9 @@ function compartirDia(dia) {
 }
 
 function irAComprar() {
+  if (typeof fbq === 'function') {
+    fbq('track', 'InitiateCheckout', {content_name: 'Novena San Rafael', value: 4.99, currency: 'USD'});
+  }
   window.location.href = 'https://pay.hotmart.com/G106542088U';
 }
 
